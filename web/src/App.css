@@ -1,19 +1,232 @@
-html,
-body,
-#root,
-.app {
-  height: 100%;
+/* ─── CSS Custom Properties ─────────────────────────────────────────────── */
+:root {
+  --bg-base: #1a1a1a;
+  --bg-terminal: #1e1e1e;
+  --bg-toolbar: #252526;
+  --bg-input: #1e1e1e;
+  --bg-input-field: #2d2d2d;
+  --bg-sidebar: #252526;
+  --bg-bottom: #252526;
+
+  --text-primary: #d4d4d4;
+  --text-secondary: #9d9d9d;
+  --text-disabled: #555;
+
+  --border-color: #3a3a3a;
+  --btn-bg: #3a3a3a;
+  --btn-bg-hover: #4a4a4a;
+  --btn-text: #d4d4d4;
+
+  --status-connected: #23d18b;
+  --status-connecting: #e5e510;
+  --status-disconnected: #9d9d9d;
+  --status-error: #f14c4c;
+
+  --toolbar-height: 36px;
+  --input-height: 44px;
+  --font-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: Menlo, Monaco, 'Courier New', monospace;
+}
+
+/* ─── Reset ─────────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  background: #1e1e1e;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-ui);
 }
 
 body {
   overflow: hidden;
 }
 
-.terminal-container {
+/* ─── App Grid ───────────────────────────────────────────────────────────── */
+.app {
+  display: grid;
+  grid-template-rows: var(--toolbar-height) 1fr var(--input-height);
+  grid-template-areas:
+    'toolbar'
+    'main'
+    'input';
   height: 100%;
-  padding: 8px;
-  box-sizing: border-box;
+}
+
+/* ─── Toolbar ────────────────────────────────────────────────────────────── */
+.toolbar {
+  grid-area: toolbar;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  background: var(--bg-toolbar);
+  border-bottom: 1px solid var(--border-color);
+  font-size: 12px;
+}
+
+.toolbar__spacer {
+  flex: 1;
+}
+
+.toolbar__group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.toolbar__btn {
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  padding: 2px 8px;
+  font-size: 12px;
+  font-family: var(--font-ui);
+  cursor: pointer;
+  transition: background 0.1s;
+  white-space: nowrap;
+}
+
+.toolbar__btn:hover:not(:disabled) {
+  background: var(--btn-bg-hover);
+}
+
+.toolbar__btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.toolbar__font-size {
+  color: var(--text-secondary);
+  font-size: 11px;
+  min-width: 32px;
+  text-align: center;
+}
+
+/* ─── Status Badge ───────────────────────────────────────────────────────── */
+.status-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.status-badge__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.status-badge--connected .status-badge__dot { background: var(--status-connected); }
+.status-badge--connecting .status-badge__dot { background: var(--status-connecting); }
+.status-badge--disconnected .status-badge__dot { background: var(--status-disconnected); }
+.status-badge--error .status-badge__dot { background: var(--status-error); }
+
+.status-badge--connected { color: var(--status-connected); }
+.status-badge--connecting { color: var(--status-connecting); }
+.status-badge--error { color: var(--status-error); }
+
+/* ─── Main Area ──────────────────────────────────────────────────────────── */
+.app__main {
+  grid-area: main;
+  display: flex;
+  min-height: 0;  /* prevent flex overflow in grid */
+  overflow: hidden;
+}
+
+/* Terminal fills remaining space */
+.terminal-container {
+  flex: 1;
+  height: 100%;
+  background: var(--bg-terminal);
+  padding: 6px;
+  overflow: hidden;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* ─── Sidebar (addon slot) ───────────────────────────────────────────────── */
+.app__sidebar {
+  width: 300px;
+  background: var(--bg-sidebar);
+  border-left: 1px solid var(--border-color);
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+/* ─── Bottom Panel (addon slot) ─────────────────────────────────────────── */
+.app__bottom {
+  background: var(--bg-bottom);
+  border-top: 1px solid var(--border-color);
+  height: 200px;
+  overflow-y: auto;
+}
+
+/* ─── App with addons: add bottom row ────────────────────────────────────── */
+.app--has-bottom {
+  grid-template-rows: var(--toolbar-height) 1fr 200px var(--input-height);
+  grid-template-areas:
+    'toolbar'
+    'main'
+    'bottom'
+    'input';
+}
+
+.app--has-bottom .app__bottom {
+  grid-area: bottom;
+}
+
+/* ─── Input Bar ──────────────────────────────────────────────────────────── */
+.input-bar {
+  grid-area: input;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 10px;
+  background: var(--bg-input);
+  border-top: 1px solid var(--border-color);
+}
+
+.input-bar__prompt {
+  color: var(--status-connected);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  user-select: none;
+}
+
+.input-bar__input {
+  flex: 1;
+  background: var(--bg-input-field);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  padding: 6px 10px;
+  font-size: 14px;
+  font-family: var(--font-mono);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.input-bar__input:focus {
+  border-color: #569cd6;
+}
+
+.input-bar__input::placeholder {
+  color: var(--text-disabled);
+}
+
+.input-bar__input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

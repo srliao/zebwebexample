@@ -1,51 +1,63 @@
 import { useEffect, useRef } from 'react'
 import { Terminal as XTerm } from '@xterm/xterm'
-import { AttachAddon } from '@xterm/addon-attach'
 import { FitAddon } from '@xterm/addon-fit'
 import '@xterm/xterm/css/xterm.css'
-
-function buildWsUrl(): string {
-  if (import.meta.env.VITE_WS_URL) {
-    return import.meta.env.VITE_WS_URL as string
-  }
-  const proto = location.protocol === 'https:' ? 'wss:' : 'ws:'
-  return `${proto}//${location.host}/ws`
-}
+import { useMudContext } from './context/MudContext'
 
 export default function Terminal() {
   const containerRef = useRef<HTMLDivElement>(null)
+  const { termRef, fitAddonRef, fontSize } = useMudContext()
 
   useEffect(() => {
     const term = new XTerm({
-      cursorBlink: true,
-      fontSize: 14,
+      disableStdin: true,
+      cursorBlink: false,
+      fontSize,
       fontFamily: 'Menlo, Monaco, "Courier New", monospace',
       theme: {
         background: '#1e1e1e',
         foreground: '#d4d4d4',
         cursor: '#d4d4d4',
+        black: '#000000',
+        red: '#cd3131',
+        green: '#0dbc79',
+        yellow: '#e5e510',
+        blue: '#2472c8',
+        magenta: '#bc3fbc',
+        cyan: '#11a8cd',
+        white: '#e5e5e5',
+        brightBlack: '#666666',
+        brightRed: '#f14c4c',
+        brightGreen: '#23d18b',
+        brightYellow: '#f5f543',
+        brightBlue: '#3b8eea',
+        brightMagenta: '#d670d6',
+        brightCyan: '#29b8db',
+        brightWhite: '#e5e5e5',
       },
     })
 
     const fitAddon = new FitAddon()
     term.loadAddon(fitAddon)
     term.open(containerRef.current!)
-    fitAddon.fit()
 
-    const ws = new WebSocket(buildWsUrl())
-    ws.binaryType = 'arraybuffer'
+    termRef.current = term
+    fitAddonRef.current = fitAddon
 
-    const attachAddon = new AttachAddon(ws)
-    term.loadAddon(attachAddon)
+    // Defer fit until after browser has completed layout
+    const rafId = requestAnimationFrame(() => fitAddon.fit())
 
     const onResize = () => fitAddon.fit()
     window.addEventListener('resize', onResize)
 
     return () => {
+      cancelAnimationFrame(rafId)
       window.removeEventListener('resize', onResize)
-      ws.close()
+      termRef.current = null
+      fitAddonRef.current = null
       term.dispose()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return <div className="terminal-container" ref={containerRef} />
