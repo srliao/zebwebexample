@@ -366,6 +366,33 @@ body {
   background: var(--btn-bg-hover);
 }
 
+/* ─── Connect Screen ─────────────────────────────────────────────────────── */
+.connect-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background: var(--bg-base);
+}
+
+.connect-screen__btn {
+  background: #0e639c;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 20px 64px;
+  font-size: 24px;
+  font-family: var(--font-ui);
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+  transition: background 0.15s;
+}
+
+.connect-screen__btn:hover {
+  background: #1177bb;
+}
+
 /* ─── Input Bar ──────────────────────────────────────────────────────────── */
 .input-bar {
   grid-area: input;

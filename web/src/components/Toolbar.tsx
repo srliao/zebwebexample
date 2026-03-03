@@ -20,7 +20,7 @@ function StatusBadge({ status }: { status: ConnectionStatus }) {
 }
 
 export default function Toolbar() {
-  const { status, sessionLog, fontSize, setFontSize, reconnect } = useMudContext()
+  const { status, sessionLog, fontSize, setFontSize } = useMudContext()
 
   function downloadLog() {
     const blob = new Blob([sessionLog], { type: 'text/plain' })
@@ -63,13 +63,6 @@ export default function Toolbar() {
           title="Download session log"
         >
           Download Log
-        </button>
-        <button
-          className="toolbar__btn"
-          onClick={reconnect}
-          title="Reconnect"
-        >
-          Reconnect
         </button>
       </div>
     </div>

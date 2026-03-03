@@ -45,12 +45,13 @@ export function MudProvider({ children }: { children: ReactNode }) {
     setAddons((prev) => prev.filter((a) => a.id !== id))
   }, [])
 
-  const { status, sessionLog, sendCommand, reconnect } = useMud(termRef, fitAddonRef, addons)
+  const { status, sessionLog, sendCommand, reconnect, hasConnected } = useMud(termRef, fitAddonRef, addons)
 
   const value: MudContextValue = {
     termRef,
     fitAddonRef,
     status,
+    hasConnected,
     sessionLog,
     sendCommand,
     reconnect,

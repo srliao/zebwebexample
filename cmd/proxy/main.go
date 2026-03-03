@@ -49,6 +49,7 @@ func main() {
 		// telnet -> websocket
 		go func() {
 			defer close(done)
+			defer ws.Close()
 			buf := make([]byte, 4096)
 			for {
 				n, err := tcp.Read(buf)

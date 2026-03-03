@@ -172,6 +172,8 @@ export function useMud(
   }, [])
 
   useEffect(() => {
+    if (connectGeneration === 0) return
+
     const url = buildWsUrl()
     setStatus('connecting')
 
@@ -257,5 +259,5 @@ export function useMud(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connectGeneration])
 
-  return { status, sessionLog, sendCommand, reconnect }
+  return { status, sessionLog, sendCommand, reconnect, hasConnected: connectGeneration > 0 }
 }

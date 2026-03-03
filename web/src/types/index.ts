@@ -25,6 +25,7 @@ export interface MudContextValue {
   fitAddonRef: MutableRefObject<FitAddon | null>
   // Connection
   status: ConnectionStatus
+  hasConnected: boolean
   sessionLog: string
   sendCommand: (cmd: string) => void
   reconnect: () => void

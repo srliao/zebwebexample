@@ -6,7 +6,17 @@ import MapperAddon from './components/addons/MapperAddon'
 import ShoutAddon from './components/addons/ShoutAddon'
 
 function AppLayout() {
-  const { sendCommand } = useMudContext()
+  const { sendCommand, status, reconnect } = useMudContext()
+
+  if (status === 'disconnected' || status === 'error') {
+    return (
+      <div className="connect-screen">
+        <button className="connect-screen__btn" onClick={reconnect}>
+          Connect
+        </button>
+      </div>
+    )
+  }
 
   return (
     <div className="app">
