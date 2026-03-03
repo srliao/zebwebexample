@@ -1,0 +1,16 @@
+services:
+  proxy:
+    build: .
+    environment:
+      TELNET_ADDR: ${TELNET_ADDR:-zebedee-mud.org:7000}
+      LISTEN_ADDR: :8080
+    restart: unless-stopped
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN}
+    depends_on:
+      - proxy
+    restart: unless-stopped

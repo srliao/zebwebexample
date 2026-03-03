@@ -1,0 +1,19 @@
+html,
+body,
+#root,
+.app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: #1e1e1e;
+}
+
+body {
+  overflow: hidden;
+}
+
+.terminal-container {
+  height: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+}

@@ -1,0 +1,51 @@
+version: '3'
+
+vars:
+  TELNET_ADDR: '{{.TELNET_ADDR | default "zebedee-mud.org:7000"}}'
+  LISTEN_ADDR: '{{.LISTEN_ADDR | default ":8080"}}'
+
+tasks:
+  default:
+    desc: Run the WebSocket-to-Telnet proxy
+    cmd: go run ./cmd/proxy
+    env:
+      TELNET_ADDR: '{{.TELNET_ADDR}}'
+      LISTEN_ADDR: '{{.LISTEN_ADDR}}'
+
+  web:install:
+    desc: Install frontend dependencies
+    dir: web
+    cmd: npm install
+
+  web:build:
+    desc: Build the frontend for production
+    dir: web
+    cmd: npm run build
+
+  web:dev:
+    desc: Run Go proxy and Vite dev server in parallel
+    deps:
+      - task: default
+      - task: _vite
+
+  _vite:
+    desc: Run Vite dev server
+    dir: web
+    cmd: npm run dev
+    internal: true
+
+  docker:build:
+    desc: Build the proxy Docker image
+    cmd: docker compose build
+
+  docker:up:
+    desc: Start proxy + Cloudflare tunnel (detached)
+    cmd: docker compose up -d
+
+  docker:down:
+    desc: Stop all services
+    cmd: docker compose down
+
+  docker:logs:
+    desc: Follow logs from all services
+    cmd: docker compose logs -f
