@@ -2,44 +2,26 @@ import { MudProvider, useMudContext } from './context/MudContext'
 import Terminal from './Terminal'
 import InputBar from './components/InputBar'
 import Toolbar from './components/Toolbar'
+import MapperAddon from './components/addons/MapperAddon'
+import ShoutAddon from './components/addons/ShoutAddon'
 
 function AppLayout() {
-  const { addons, sendCommand } = useMudContext()
-
-  const sidebarAddons = addons.filter((a) => a.panelPosition === 'sidebar-right')
-  const bottomAddons = addons.filter((a) => a.panelPosition === 'bottom')
-
-  const hasSidebar = sidebarAddons.length > 0
-  const hasBottom = bottomAddons.length > 0
-
-  const appClass = [
-    'app',
-    hasSidebar ? 'app--has-sidebar' : '',
-    hasBottom ? 'app--has-bottom' : '',
-  ]
-    .filter(Boolean)
-    .join(' ')
+  const { sendCommand } = useMudContext()
 
   return (
-    <div className={appClass}>
+    <div className="app">
       <Toolbar />
       <div className="app__main">
         <Terminal />
-        {hasSidebar && (
-          <aside className="app__sidebar">
-            {sidebarAddons.map((addon) => (
-              <addon.component key={addon.id} sendCommand={sendCommand} />
-            ))}
-          </aside>
-        )}
+        <aside className="app__sidebar">
+          <div className="app__sidebar-top">
+            <MapperAddon sendCommand={sendCommand} />
+          </div>
+          <div className="app__sidebar-bottom">
+            <ShoutAddon sendCommand={sendCommand} />
+          </div>
+        </aside>
       </div>
-      {hasBottom && (
-        <div className="app__bottom">
-          {bottomAddons.map((addon) => (
-            <addon.component key={addon.id} sendCommand={sendCommand} />
-          ))}
-        </div>
-      )}
       <InputBar />
     </div>
   )

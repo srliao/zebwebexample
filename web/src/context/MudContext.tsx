@@ -31,7 +31,12 @@ export function MudProvider({ children }: { children: ReactNode }) {
 
   const registerAddon = useCallback((addon: MudAddon) => {
     setAddons((prev) => {
-      if (prev.find((a) => a.id === addon.id)) return prev
+      const idx = prev.findIndex((a) => a.id === addon.id)
+      if (idx >= 0) {
+        const next = [...prev]
+        next[idx] = addon
+        return next
+      }
       return [...prev, addon]
     })
   }, [])
